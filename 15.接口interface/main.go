@@ -95,12 +95,14 @@ func _func2() {
 
 // 空接口可以存储任意类型的值，那我们如何获取其存储的具体数据呢？
 func assign(a interface{}) {
-	str, ok := a.(string)
+	// 1
+	str, ok := a.(string) // 类型断言 x.(T) T, boolean
 	if !ok {
 		fmt.Println("a is not string")
 	} else {
 		fmt.Println(str)
 	}
+	// 2
 	switch t := a.(type) {
 	case string:
 		fmt.Println("a is string")
@@ -108,6 +110,8 @@ func assign(a interface{}) {
 		fmt.Println(t)
 	}
 }
+
+// 接口底层 动态类型 动态值
 
 // 入口函数
 func main() {

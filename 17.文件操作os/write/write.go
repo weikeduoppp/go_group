@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-// os.OpenFile()函数能够以指定模式打开文件，从而实现文件写入相关功能。
+// os.OpenFile()函数能够以指定模式打开文件，从而实现文件写入相关功能。  FileMode：文件权限，一个八进制数。r（读）04，w（写）02，x（执行）01。 linux下的权限
 /*
 	func OpenFile(name string, flag int, perm FileMode) (*File, error) {
 		...
@@ -19,10 +19,10 @@ import (
 	os.O_RDONLY	只读
 	os.O_RDWR	读写
 	os.O_TRUNC	清空
-	os.O_APPEND	追加
+	os.O_APPEND	追加 文件尾部添加
 */
 func writeFileDemo1() {
-	file, err := os.OpenFile("xx.txt", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	file, err := os.OpenFile("xx.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Printf("write failed err: %v", err)
 		return
@@ -41,9 +41,11 @@ func writeFileDemo2() {
 		return
 	}
 	defer file.Close()
+	// 创建缓存区
 	writer := bufio.NewWriter(file)
+	// 写入缓存区
 	writer.WriteString("存入缓存写入")
-	// 写入
+	// 写入磁盘
 	writer.Flush()
 }
 
@@ -81,5 +83,6 @@ func MyWriteFile() {
 	// writeFileDemo2()
 	writeFileDemo3()
 	fmt.Println("文件复制")
-	CopyFile("copy.txt", "./write/write.go")
+	CopyFile("write/copy.txt", "./write/write.go")
+	// 编辑文件  需要一个临时文件. 再重命名 os.rename
 }

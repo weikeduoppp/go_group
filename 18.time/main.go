@@ -50,7 +50,7 @@ func durations() {
 	// 要求时间+时间间隔的需求  func (t Time) Add(d Duration) Time
 	fmt.Println(now.Add(Hour)) // 一个小时之后的时间
 	/*
-		Sub 两个时间之间的差值
+		Sub 两个时间之间的差值  Duration  需要相同时区
 		Equal 判断两个时间是否相同，会考虑时区的影响，因此不同时区标准的时间也可以正确比较
 		Before 如果t代表的时间点在u之前，返回真；否则返回假。 func (t Time) Before(u Time) bool
 		After 如果t代表的时间点在u之后，返回真；否则返回假。
@@ -71,9 +71,16 @@ func func2() {
 
 	// 将时间模板转化回time
 	t, err := time.Parse("2006/01/02", "2020/12/18")
+	// 按照东八区的时区和格式取解析一个字符串格式的时间
 	if err != nil {
 		fmt.Println(err)
 	}
+	// now.Location() 返回*Location 当前时间的时区
+	t2, err2 := time.ParseInLocation("2006/01/02", "2020/12/30", now.Location())
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	fmt.Println(t2.Sub(now))
 	fmt.Println(t.Unix())
 }
 

@@ -38,8 +38,20 @@ func (l Logger) checkLevel(level LogLevel) (b bool) {
 	return
 }
 
+/*
+	获取行号信息:
+	runtime.Caller func Caller(skip int) (pc uintptr, file string, line int, ok bool)
+	Caller报告当前go程调用栈所执行的函数的文件和行号信息。实参skip为上溯的栈帧数，0表示Caller的调用者（Caller所在的调用栈）。（由于历史原因，skip的意思在Caller和Callers中并不相同。）函数的返回值为调用栈标识符、文件名、该调用在文件中的行号。如果无法获得信息，ok会被设为false。
+
+	获取函数名: runtime.FuncForPC(pc) FuncForPC返回一个表示调用栈标识符pc对应的调用栈的*Func；如果该调用栈标识符没有对应的调用栈，函数会返回nil。每一个调用栈必然是对某个函数的调用。
+	获取路径名: path.Base(path string)
+*/
 // pln 公用
 func (l Logger) pln(msg interface{}, level LogLevel) {
+	// 过滤
+	if !l.checkLevel(level) {
+		return
+	}
 	now := time.Now()
 	var levelInfo string
 	switch level {
@@ -64,4 +76,9 @@ func (l Logger) pln(msg interface{}, level LogLevel) {
 // Debug 调试
 func (l Logger) Debug(msg interface{}) {
 	l.pln(msg, DEBUG)
+}
+
+// Trace 跟踪
+func (l Logger) Trace(msg interface{}) {
+	l.pln(msg, TRACE)
 }

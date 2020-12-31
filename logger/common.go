@@ -2,12 +2,17 @@ package logger
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"runtime"
+	"strings"
 	"time"
 )
 
 // DEBUG... level
 const (
-	DEBUG LogLevel = iota
+	UNKNOWN LogLevel = iota
+	DEBUG
 	TRACE
 	INFO
 	WARNING
@@ -18,26 +23,6 @@ const (
 // LogLevel log级别
 type LogLevel uint8
 
-// Logger 日志结构体
-type Logger struct {
-	level []LogLevel
-}
-
-// NewLog Logger 构造函数
-func NewLog() Logger {
-	return Logger{}
-}
-
-// checkLevel 检测是否包含
-func (l Logger) checkLevel(level LogLevel) (b bool) {
-	for _, v := range l.level {
-		if v == level {
-			b = true
-		}
-	}
-	return
-}
-
 /*
 	获取行号信息:
 	runtime.Caller func Caller(skip int) (pc uintptr, file string, line int, ok bool)
@@ -46,39 +31,41 @@ func (l Logger) checkLevel(level LogLevel) (b bool) {
 	获取函数名: runtime.FuncForPC(pc) FuncForPC返回一个表示调用栈标识符pc对应的调用栈的*Func；如果该调用栈标识符没有对应的调用栈，函数会返回nil。每一个调用栈必然是对某个函数的调用。
 	获取路径名: path.Base(path string)
 */
-// pln 公用
-func (l Logger) pln(msg interface{}, level LogLevel) {
-	// 过滤
-	if !l.checkLevel(level) {
+func getLineInfo(skip int) (funcName, fileName string, line int) {
+	pc, file, line, ok := runtime.Caller(skip)
+	if !ok {
+		fmt.Println("runtime caller failed")
 		return
 	}
-	now := time.Now()
-	var levelInfo string
+	funcName = strings.Split(runtime.FuncForPC(pc).Name(), ".")[1]
+	fileName = path.Base(file)
+	return
+}
+
+func getLevelInfo(level LogLevel) (levelInfo string) {
 	switch level {
 	case DEBUG:
-		levelInfo = "DEBUG"
+		levelInfo = "DEBUG  "
 	case TRACE:
-		levelInfo = "TRACE"
+		levelInfo = "TRACE  "
 	case INFO:
-		levelInfo = "INFO"
+		levelInfo = "INFO   "
 	case WARNING:
 		levelInfo = "WARNING"
 	case ERROR:
-		levelInfo = "ERROR"
+		levelInfo = "ERROR  "
 	case FATAL:
-		levelInfo = "FATAL"
+		levelInfo = "FATAL  "
 	default:
-		levelInfo = "unknown"
+		levelInfo = "UNKNOWN"
 	}
-	fmt.Printf("[%s] [%s] %v \n", now.Format("2006-01-02 15:04:05"), levelInfo, msg)
+	return
 }
 
-// Debug 调试
-func (l Logger) Debug(msg interface{}) {
-	l.pln(msg, DEBUG)
-}
-
-// Trace 跟踪
-func (l Logger) Trace(msg interface{}) {
-	l.pln(msg, TRACE)
+func getFileInfo(file *os.File) (name string, size int64, modTime time.Time) {
+	fileInfo, err := file.Stat()
+	if err != nil {
+		fmt.Printf("Get file info failed err: %v\n", err)
+	}
+	return fileInfo.Name(), fileInfo.Size(), fileInfo.ModTime()
 }

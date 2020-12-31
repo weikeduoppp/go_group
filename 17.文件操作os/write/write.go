@@ -20,6 +20,8 @@ import (
 	os.O_RDWR	读写
 	os.O_TRUNC	清空
 	os.O_APPEND	追加 文件尾部添加
+
+	
 */
 func writeFileDemo1() {
 	file, err := os.OpenFile("xx.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)

@@ -75,6 +75,7 @@ func (f *FileLog) checkLevel(level LogLevel) (b bool) {
 	return
 }
 
+// 检测
 func (f *FileLog) checkFileSizeAndSplitAndBackup(file *os.File, logBool, errBool bool) error {
 	name, size, modTime := getFileInfo(file)
 	if size >= f.maxFileSize {
@@ -112,24 +113,18 @@ func (f *FileLog) pln(level LogLevel, format string, a ...interface{}) {
 		// 大于则切割
 		err := f.checkFileSizeAndSplitAndBackup(f.logFile, true, false)
 		if err != nil {
-			fmt.Printf("logFile split file Backup failed err: %v\n", err)
+			fmt.Printf("logFile split file Backup failed err: %v\n, msg: %v", err, msg)
 			return
 		}
 		fmt.Fprintf(f.logFile, "[%s] |%s| [%s line: %d >> %s] %v \n", now.Format("2006-01-02 15:04:05"), levelInfo, fileName, line, funcName, msg)
 	} else { // errLog
 		err := f.checkFileSizeAndSplitAndBackup(f.errFile, false, true)
 		if err != nil {
-			fmt.Printf("logFile split file Backup failed err: %v\n", err)
+			fmt.Printf("logFile split file Backup failed err: %v\n, msg: %v", err, msg)
 			return
 		}
 		fmt.Fprintf(f.errFile, "[%s] |%s| [%s line: %d >> %s] %v \n", now.Format("2006-01-02 15:04:05"), levelInfo, fileName, line, funcName, msg)
 	}
-}
-
-// Close 文件关闭
-func (f *FileLog) Close() {
-	f.logFile.Close()
-	f.errFile.Close()
 }
 
 // Debug 调试

@@ -33,7 +33,7 @@ func _func() {
 
 	var f = [2]int{1, 2}
 
-	reflectType(a)
+	reflectType(&a)
 	reflectType(c)
 	reflectType(b)
 	reflectType(d)
@@ -43,6 +43,7 @@ func _func() {
 func reflectValue(x interface{}) {
 	v := reflect.ValueOf(x)
 	k := v.Kind()
+	fmt.Println(k)
 	switch k {
 	case reflect.Int64:
 		// v.Int()从反射中获取整型的原始值，然后通过int64()强制类型转换

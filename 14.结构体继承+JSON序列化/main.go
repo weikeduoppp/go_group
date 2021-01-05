@@ -22,7 +22,7 @@ func (t *animal) setHobbies(hobbies [3]string) { // 数组ok
 	t.hobbies = hobbies
 }
 func (t *animal) setHobbies2(hobbies []string) {
-	// t.hobbies2 = hobbies err
+	// t.hobbies2 = hobbies // hobbies 本体修改 hobbies2就修改
 	// slice和map这两种数据类型都包含了指向底层数据的指针 正确方法
 	b := make([]string, len(hobbies))
 	copy(b, hobbies)
@@ -73,6 +73,7 @@ func _json() {
 		return
 	}
 	c.cate = "猫"
+	c.animal.Name = "战神"
 	fmt.Printf("%#v\n", c)
 }
 

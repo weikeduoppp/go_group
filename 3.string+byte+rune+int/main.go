@@ -34,7 +34,7 @@ func _string() {
 	// +或fmt.Sprintf	拼接字符串
 	// strings.Split	分割
 	// strings.Contains	判断是否包含
-	// strings.HasPrefix,strings.HasSuffix	前缀/后缀判断
+	// strings.HasPrefix, strings.HasSuffix	前缀/后缀判断
 	// strings.Index(),strings.LastIndex()	子串出现的位置
 	// strings.Join(a[]string, sep string)	join操作
 	fmt.Println(len(a))

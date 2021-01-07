@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 /*
@@ -114,6 +115,24 @@ func _func5() {
 		fmt.Printf("name:%s index:%d type:%v json tag:%v\n", scoreField.Name, scoreField.Index, scoreField.Type, scoreField.Tag.Get("json"))
 	}
 }
+
+// strconv 基本数据类型和其字符串表示的相互转换。
+func _func6() {
+	var str string = "3000"
+	number, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		fmt.Printf("parse int failed err:%v\n", err)
+	}
+	retInt, _ := strconv.Atoi(str)
+	fmt.Printf("%T\n", retInt)
+	fmt.Printf("%T\n", number)
+	var n int = 1100
+	s := fmt.Sprintf("%d", n)
+	retStr := strconv.Itoa(n)
+	fmt.Printf("%#v\n", s)
+	fmt.Printf("%#v\n", retStr)
+}
+
 func main() {
 	fmt.Println()
 	fmt.Println("reflectType:")
@@ -130,4 +149,7 @@ func main() {
 	fmt.Println()
 	fmt.Println("结构体反射:")
 	_func5()
+	fmt.Println()
+	fmt.Println("strconv:")
+	_func6()
 }

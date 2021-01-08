@@ -17,6 +17,7 @@ func _string() {
 	b := "456"
 	c := "str := \"c:\\Code\\lesson1\\go.exe\""
 	fmt.Printf("变量:%v\n", a)
+	fmt.Println(c[1 : len(c)-1])
 	// 转义符
 	// \r	回车符（返回行首）
 	// \n	换行符（直接跳到下一行的同列位置）

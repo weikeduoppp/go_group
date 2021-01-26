@@ -6,6 +6,7 @@ import (
 	"path"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -68,4 +69,25 @@ func getFileInfo(file *os.File) (name string, size int64, modTime time.Time) {
 		fmt.Printf("Get file info failed err: %v\n", err)
 	}
 	return fileInfo.Name(), fileInfo.Size(), fileInfo.ModTime()
+}
+
+var wg sync.WaitGroup
+
+// LogChannel ...
+var LogChannel chan string
+
+// Go 执行LogChannel
+func Go(l chan string) {
+	defer wg.Done()
+	for {
+		
+	}
+}
+
+func init() {
+	fmt.Println("logger 启用成功")
+	LogChannel := make(chan string, 100)
+	wg.Add(1)
+	go Go(LogChannel)
+	wg.Wait()
 }

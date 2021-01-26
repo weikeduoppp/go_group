@@ -129,7 +129,7 @@ func _pointer() {
 	new和make的区别
 	都是开辟空间. 申请内存.
 	new是给基础类型.或者结构体struct. 返回: 对应变量的指针地址
-	make是给特定类型. slice[] map[T1]T2 ..  返回: 对应变量
+	make是给特定类型. slice[] map[T1]T2  chan..  返回: 对应变量
 */
 
 // 入口函数

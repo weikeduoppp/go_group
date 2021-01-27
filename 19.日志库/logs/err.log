@@ -1,9 +1,1 @@
-[2020-12-31 18:17:09] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2020-12-31 18:17:11] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-04 10:50:38] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-04 11:30:03] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-04 11:30:05] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-04 11:30:08] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-04 11:30:10] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-26 18:04:44] |FATAL  | [main.go line: 31 >> FileTest] console 
-[2021-01-26 18:05:04] |FATAL  | [main.go line: 31 >> FileTest] console 
+[2021-01-27 16:06:55] |FATAL  | [main.go line: 33 >> FileTest] console 

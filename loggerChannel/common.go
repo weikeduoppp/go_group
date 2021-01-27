@@ -66,6 +66,7 @@ func getFileInfo(file *os.File) (name string, size int64, modTime time.Time) {
 	fileInfo, err := file.Stat()
 	if err != nil {
 		fmt.Printf("Get file info failed err: %v\n", err)
+		return
 	}
 	return fileInfo.Name(), fileInfo.Size(), fileInfo.ModTime()
 }

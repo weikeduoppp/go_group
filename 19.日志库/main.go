@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log"
 	"logger"
+	"time"
 )
 
 // Log 全局log
 var Log logger.Console
 
-// FileLog
+// FileLog ...
 var FileLog *logger.FileLog
 
 func test() {
@@ -22,15 +23,18 @@ func test() {
 	Log.Info("console %v", Log)
 }
 
-// FileTest
+// FileTest ...
 func FileTest() {
 	// 允许的日志级别
 	level := []logger.LogLevel{logger.DEBUG, logger.INFO, logger.TRACE, logger.WARNING, logger.ERROR, logger.FATAL}
 	FileLog = logger.NewFileLog(level, "./logs", 1*1024)
-	FileLog.Debug("console")
-	FileLog.Fatal("console")
-	FileLog.Info("console")
-	FileLog.Info("console %v", FileLog)
+	for {
+		FileLog.Debug("console")
+		FileLog.Fatal("console")
+		FileLog.Info("console")
+		FileLog.Info("console %v", FileLog)
+		time.Sleep(time.Millisecond * 500)
+	}
 }
 
 func _func() {

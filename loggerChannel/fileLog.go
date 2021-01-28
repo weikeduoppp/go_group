@@ -12,15 +12,18 @@ const ChanMaxSize = 50000
 
 // FileLog 日志结构体
 type FileLog struct {
-	level       []LogLevel //
-	filePath    string     // logs目录
-	logFile     *os.File   // 正常log
-	errFile     *os.File   // 错误log
-	maxFileSize int64      // 文件大小 大于则切割
-	LogChannel  chan *logValue
+	level         []LogLevel //
+	filePath      string     // logs目录
+	logFile       *os.File   // 正常log
+	errFile       *os.File   // 错误log
+	logFileStatus bool
+	errFileStatus bool
+	maxFileSize   int64 // 文件大小 大于则切割
+	LogChannel    chan *logValue
 }
 
 // func (f *File) Stat() (fi FileInfo, err error) // Stat返回描述文件f的FileInfo类型值。如果出错，错误底层类型是*PathError。
+
 /*
 	type FileInfo interface {
     Name() string       // 文件的名字（不含扩展名）
@@ -35,16 +38,20 @@ type FileLog struct {
 // NewFileLog FileLog 构造函数
 func NewFileLog(level []LogLevel, filePath string, maxFileSize int64) *FileLog {
 	file := &FileLog{
-		level:       level,
-		filePath:    filePath,
-		maxFileSize: maxFileSize,
-		LogChannel:  make(chan *logValue, ChanMaxSize),
+		level:         level,
+		filePath:      filePath,
+		maxFileSize:   maxFileSize,
+		LogChannel:    make(chan *logValue, ChanMaxSize),
+		logFileStatus: false,
+		errFileStatus: false,
 	}
 	err := file.initFile(true, true) // 打开日志文件
 	if err != nil {
 		panic(err)
 	}
-	go file.Go()
+	for i := 0; i < 3; i++ { // 多开可以
+		go file.Go()
+	}
 	return file
 }
 
@@ -58,6 +65,7 @@ func (f *FileLog) initFile(logBool, errBool bool) error {
 			return err
 		}
 		f.logFile = file
+		f.logFileStatus = true
 	}
 	if errBool {
 		errFilePath := f.filePath + "/err.log"
@@ -67,6 +75,7 @@ func (f *FileLog) initFile(logBool, errBool bool) error {
 			return err
 		}
 		f.errFile = errFile
+		f.errFileStatus = true
 	}
 	return nil
 }
@@ -92,6 +101,11 @@ func (f *FileLog) checkFileSizeAndSplitAndBackup(file *os.File, logBool, errBool
 			3. 重新赋值
 		*/
 		file.Close()
+		if logBool {
+			f.logFileStatus = false
+		} else {
+			f.errFileStatus = false
+		}
 		oldpath := path.Join(f.filePath, name)
 		newName := fmt.Sprintf("backup_%s_%s", modTime.Format("20060102150405"), name)
 		newpath := path.Join(f.filePath, newName)
@@ -190,12 +204,17 @@ type logValue struct {
 // Go 执行LogChannel
 func (f *FileLog) Go() {
 	for {
-		select {
-		case log := <-f.LogChannel:
-			f.pln(log.level, log.msg, log.funcName, log.fileName, log.line)
-		default:
-			// 没日志 休息500ms
-			time.Sleep(time.Millisecond * 500)
+		if f.logFileStatus && f.errFileStatus { // 为了多开goroutine 提前判断文件状态
+			select {
+			case log := <-f.LogChannel:
+				f.pln(log.level, log.msg, log.funcName, log.fileName, log.line)
+			default:
+				// 没日志 休息500ms
+				time.Sleep(time.Millisecond * 500)
+			}
+		} else {
+			// 文件未打开 休息50ms
+			time.Sleep(time.Millisecond * 50)
 		}
 	}
 }

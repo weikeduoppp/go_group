@@ -128,6 +128,7 @@ func _atomic() {
 	wg.Wait()
 	end := time.Now()
 	fmt.Println(atomic.LoadInt64(&a), end.Sub(start))
+	// CompareAndSwapInt64(&p, old, new) (bool) -> old == 原值的话与新值交换, 返回是否交换
 }
 
 func main() {

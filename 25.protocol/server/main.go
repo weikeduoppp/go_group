@@ -1,30 +1,28 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net"
+
+	"25.protocol/proto"
 )
 
 // 粘包
 func handleConn(conn net.Conn) {
 	defer conn.Close()
-	// reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(conn)
 	for {
-		var temp = [128]byte{}
-		n, err := conn.Read(temp[:])
+		msg, err := proto.Decode(reader)
+		if err == io.EOF {
+			return
+		}
 		if err != nil {
 			fmt.Printf("conn read err: %v\n", err)
 			return
 		}
-		fmt.Println("收到:", string(temp[:n]))
-		// 回复客户端
-		fmt.Println("请回复:")
-		text, _ := reader.ReadString('\n')
-		text = strings.TrimSpace(text)
-		if text == "exit" {
-			break
-		}
-		conn.Write([]byte(text))
+		fmt.Println("收到:", string(msg))
 	}
 }
 

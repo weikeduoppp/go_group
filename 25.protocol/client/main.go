@@ -7,7 +7,8 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
+
+	"25.protocol/proto"
 )
 
 var wg sync.WaitGroup
@@ -32,10 +33,15 @@ func send(conn net.Conn) {
 func sendMore(conn net.Conn) {
 	defer conn.Close()
 	for i := 0; i < 10; i++ {
-		text := "hello,"
-		conn.Write([]byte(text))
-		time.Sleep(time.Second)
+		msg := "hello,Hello. How are you?"
+		data, err := proto.Encode(msg)
+		if err != nil {
+			fmt.Println("encode msg failed, err:", err)
+			return
+		}
+		conn.Write(data)
 	}
+	defer wg.Done()
 }
 
 // 读
@@ -59,10 +65,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
-	wg.Add(2)
-	go send(conn)
-	go read(conn)
-	// go sendMore(conn)
+	wg.Add(1)
+	go sendMore(conn)
 	wg.Wait()
 
 }
